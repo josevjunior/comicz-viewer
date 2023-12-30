@@ -1,0 +1,28 @@
+{
+  "name": "comicz-viewer",
+  "version": "1.0.0",
+  "description": "A simple web based viewer for web-comics",
+  "main": "index.html",
+  "scripts": {
+    "dev": "node .\\node_modules\\watchify\\bin\\cmd.js -t [ browserify-css --inlineImages true ] -t brfs main.js -o dist\\bundle.js -s ComiczViewer -v",
+    "win_build": "node .\\node_modules\\browserify\\bin\\cmd.js -t [ browserify-css --inlineImages true ] -t brfs main.js -o dist\\bundle.js -s ComiczViewer",
+    "unix_build": "node ./node_modules/browserify/bin/cmd.js -t [ browserify-css --inlineImages true ] -t brfs main.js -o dist/bundle.js -s ComiczViewer",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "comics",
+    "document",
+    "viewer",
+    "web-comics",
+    "web-toon"
+  ],
+  "author": "José Vicente Junior",
+  "license": "ISC",
+  "dependencies": {
+    "brfs": "^2.0.2",
+    "browserify": "^17.0.0",
+    "browserify-css": "^0.15.0",
+    "uniq": "^1.0.1",
+    "watchify": "^4.0.0"
+  }
+}

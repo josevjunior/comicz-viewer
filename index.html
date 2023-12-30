@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Document Viewer</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <style>
+        body {
+            margin: 0;
+            background-color: rgb(35, 35, 35);
+        }
+
+        #app {
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!--<div id="image-viewer">
+            <img id="current-image" src="">
+        </div>
+        
+        <div id="prev-page">Prev</div>
+        <div id="next-page">Next</div>
+        
+        <div id="navigation">
+            <button id="prev-button">Previous</button>
+            <button id="next-button">Next</button>
+            <button id="fit-width">Fit Width</button>
+            <button id="fit-height">Fit Height</button>
+        </div>-->
+    </div>
+    
+    
+    <script src="dist/bundle.js">
+    </script>
+    <script>
+
+        const imageList = [
+            '/img/0_09.jpg',
+            '/img/0_10.jpg',
+            '/img/pagina_1.png',
+            '/img/pagina_2.png'
+        // Add more images as needed
+        ]
+
+        ComiczViewer.init('app', {
+            title: 'My Comic Book',
+            issue: '01',
+            pages: imageList
+        });
+    </script>
+</body>
+</html>
