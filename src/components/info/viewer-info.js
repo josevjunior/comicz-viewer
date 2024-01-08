@@ -1,10 +1,8 @@
 
-require('./viewer-info.css')
+require('./viewer-info.css');
 
 const fs = require('fs');
-const DOMUtils = require('../util/dom-util');
-
-const htmlTemplate = fs.readFileSync(__dirname + '/viewer-info.html');
+const DOMUtils = require('../../util/dom-util');
 
 function ViewerInfo() {
 
@@ -70,4 +68,26 @@ function ViewerInfo() {
 
 }
 
-module.exports = ViewerInfo;
+module.exports = {
+    template: fs.readFileSync(`${__dirname}/viewer-info.html`, 'utf-8'),
+    style: fs.readFileSync(`${__dirname}/viewer-info.css`, 'utf-8'),
+    props: ['title', 'backToSiteFn', 'sharePageFn'],
+    data() {
+        return {
+            isModalHidden: true
+        }
+    },
+    methods: {
+        goBackToSite(){
+            if(this.backToSiteFn)
+                this.backToSiteFn()
+        },
+        sharePage(){
+            if(this.sharePageFn)
+                this.sharePageFn()
+        },
+        openModal() {
+            this.isModalHidden = false;
+        }
+    }
+};
