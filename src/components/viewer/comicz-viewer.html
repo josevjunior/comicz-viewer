@@ -1,18 +1,10 @@
 
-<div class="p-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex items-center space-x-4">
-    <div class="shrink-0">
-      <img class="h-12 w-12" src="/img/logo.svg" alt="ChitChat Logo">
-    </div>
-    <div>
-      <div class="text-xl font-medium text-black">ChitChat</div>
-      <p class="text-slate-500">You have a new message!</p>
-    </div>
-</div>
-<div ref="imageViewerRef" class="cz-image-viewer">
-    <div ref="currentImageRef" class="current-image">
-        <img src="">
+<div ref="imageViewerRef" class="min-h-full flex justify-center items-center">
+    <div ref="currentImageRef">
+        <img src="/img/Homunculus_008.png">
     </div>    
 </div>
-<div ref="viewerOverlayRef" v-on:click="handleViewerClick" class="cz-image-viewer overlay">
-    <ViewerInfo v-if="optionsVisible" :title="title" />
+<div ref="viewerOverlayRef" v-on:click="handleViewerClick" class="z-10 flex text-white fixed top-0 left-0 min-w-full min-h-full">
+    <!-- <ViewerInfo v-if="optionsVisible" :title="title" /> -->
+    <ViewerInfo :title="title" />
 </div>

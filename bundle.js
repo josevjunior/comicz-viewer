@@ -35,14 +35,25 @@ function processJSBundle(onFinish) {
     
     await processCSSBundle();
     processJSBundle(() => {
+
         const express = require('express');
         const app = express();
+
+        app.get('/', (req, res) => {
+            console.log('Served');
+            const htmlContent = fs.readFileSync('index.html', 'utf-8');
+            res.send(htmlContent.replace('{process.env.BROWSER_REFRESH_URL}', process.env.BROWSER_REFRESH_URL));
+        });
 
         app.use(express.static(__dirname + '/'));
 
         const port = 5500;
         app.listen(port, () => {
             console.log(`Listening to port ${port}...`)
+            if(process.send) {
+                process.send({event: 'online', url: `http://localhost:${port}`});
+                console.log('R=> ', process.env.BROWSER_REFRESH_URL)
+            }
         });
     });
 

@@ -74,7 +74,8 @@ module.exports = {
     props: ['title', 'backToSiteFn', 'sharePageFn'],
     data() {
         return {
-            isModalHidden: true
+            isModalHidden: true,
+            isSideBarOpen: false
         }
     },
     methods: {
@@ -87,7 +88,7 @@ module.exports = {
                 this.sharePageFn()
         },
         openModal() {
-            this.isModalHidden = false;
+            this.isSideBarOpen = !this.isSideBarOpen;
         }
     }
 };

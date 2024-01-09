@@ -122,7 +122,7 @@ module.exports = {
             currentImageRef: Vue.ref(null)
         }
     },
-    mounted() {
+    mounted1() {
         console.debug('Syncing viewer with page url...');
         const {page: pageNumber} = this.pageTracker.getParams();
 
