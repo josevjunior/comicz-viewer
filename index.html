@@ -5,6 +5,7 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Document Viewer</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.5/vue.global.prod.min.js" integrity="sha512-Reu6khHF2i9w9xRYM9FIpN5gnIN2NEomjN7lpCyfBtUWlOhZB78JJV3p685GNznhFov3urM2JxiDH14gwkaDMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         body {
             margin: 0;
@@ -17,6 +18,7 @@
     </style>
 </head>
 <body>
+    
     <div id="app">
         <!--<div id="image-viewer">
             <img id="current-image" src="">
@@ -34,23 +36,23 @@
     </div>
     
     
-    <script src="dist/bundle.js">
-    </script>
+    <script src="/dist/bundle.js" type="text/javascript"></script>
     <script>
 
         const imageList = [
-            '/img/0_09.jpg',
-            '/img/0_10.jpg',
-            '/img/pagina_1.png',
-            '/img/pagina_2.png'
+            '/img/Homunculus_005.png',
+            '/img/Homunculus_006.png',
+            '/img/Homunculus_007.png',
+            '/img/Homunculus_008.png'
         // Add more images as needed
         ]
 
-        ComiczViewer.init('app', {
+        ComiczViewer.init('#app', {
             title: 'My Comic Book',
             issue: '01',
             pages: imageList
         });
     </script>
+    <script src="{process.env.BROWSER_REFRESH_URL}"></script>
 </body>
 </html>

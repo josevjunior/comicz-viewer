@@ -1,0 +1,24 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    font-family: Roboto,Sans-Serif;
+}
+
+.z-content {
+    z-index: 1;
+}
+
+.z-overlay {
+    z-index: 2;
+}
+
+.z-sidebar {
+    z-index: 3;
+}
+
+.z-options {
+    z-index: 4;
+}

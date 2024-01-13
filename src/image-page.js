@@ -4,9 +4,9 @@ function ImagePage(pageUrl){
     // Propeties
     let self = this;
     self.img = undefined;
-    self.loaded = false;
-    self.errorOnLoad = false;
-
+    
+    let loaded = false;
+    let errorOnLoad = false;
     let resolver = undefined; 
     let rejector = undefined; 
 
@@ -18,19 +18,18 @@ function ImagePage(pageUrl){
     function init() {
         const imgEl = new Image();
         imgEl.onload = function() {
-            self.loaded = true;
+            loaded = true;
             if(resolver) {
-                resolver();
+                setTimeout(() => resolver());
             }
         }
 
         imgEl.onerror = function() {
-            self.loaded = true;
-            self.errorOnLoad = true;
+            loaded = true;
+            errorOnLoad = true;
             if(rejector){
-                rejector();
-            }
-            
+                setTimeout(() => rejector());
+            }            
         }
 
         imgEl.src = pageUrl;
