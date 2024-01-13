@@ -1,29 +1,44 @@
-<div class="min-w-full flex justify-between">
-    <div class="mt-10 ml-20">
-        <h2 class="font-bold text-4xl"> {{ title }} </h2>
+<div class="min-w-full min-h-full flex flex-col justify-between z-options">
+    <div style="transition-property: top;" class="absolute w-full top-0 /*-top-20*/ flex justify-between">
+        <div class="mt-5 ml-10">
+            <h2 class="font-bold text-4xl"> {{ title }} </h2>
+        </div>
+        <div class="mt-5 mr-10 z-options" v-on:click="openModal" >
+            <svg class="w-16 h-16" :class="{'text-black': isSideBarOpen}" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 18L20 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 12L20 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 6L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
     </div>
-    <div class="z-20 mt-10 mr-20" v-on:click="openModal">
-        <svg class="w-16 h-16" fill="currentColor" width="800px" height="800px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12.15 28.012v-0.85c0.019-0.069 0.050-0.131 0.063-0.2 0.275-1.788 1.762-3.2 3.506-3.319 1.95-0.137 3.6 0.975 4.137 2.787 0.069 0.238 0.119 0.488 0.181 0.731v0.85c-0.019 0.056-0.050 0.106-0.056 0.169-0.269 1.65-1.456 2.906-3.081 3.262-0.125 0.025-0.25 0.063-0.375 0.094h-0.85c-0.056-0.019-0.113-0.050-0.169-0.056-1.625-0.262-2.862-1.419-3.237-3.025-0.037-0.156-0.081-0.3-0.119-0.444zM20.038 3.988l-0 0.85c-0.019 0.069-0.050 0.131-0.056 0.2-0.281 1.8-1.775 3.206-3.538 3.319-1.944 0.125-3.588-1-4.119-2.819-0.069-0.231-0.119-0.469-0.175-0.7v-0.85c0.019-0.056 0.050-0.106 0.063-0.162 0.3-1.625 1.244-2.688 2.819-3.194 0.206-0.069 0.425-0.106 0.637-0.162h0.85c0.056 0.019 0.113 0.050 0.169 0.056 1.631 0.269 2.863 1.419 3.238 3.025 0.038 0.15 0.075 0.294 0.113 0.437zM20.037 15.575v0.85c-0.019 0.069-0.050 0.131-0.063 0.2-0.281 1.794-1.831 3.238-3.581 3.313-1.969 0.087-3.637-1.1-4.106-2.931-0.050-0.194-0.094-0.387-0.137-0.581v-0.85c0.019-0.069 0.050-0.131 0.063-0.2 0.275-1.794 1.831-3.238 3.581-3.319 1.969-0.094 3.637 1.1 4.106 2.931 0.050 0.2 0.094 0.394 0.137 0.588z"></path>
-        </svg>
+
+    <div style="transition-property: bottom;" class="absolute w-full bottom-0 /*-bottom-20*/ flex justify-center">
+        <div class="w-full m-10">
+            <RangeSlider :value="(currentPage + 1)" :max="pagesAmount" @value-changed="notifySliderChanged" />
+        </div>        
     </div>
-    <aside class="absolute md:w-1/3 h-screen -right-1/3 flex flex-col transition-all duration-200" 
+    
+    <aside class="absolute lg:w-1/3 h-screen -right-full flex flex-col transition-all duration-200 z-sidebar text-black bg-trans-gray"
           :class="{'w-screen': isSideBarOpen, 'right-0': isSideBarOpen}">
-        <div class="h-64 bg-gray-900"></div>
-        <nav class="flex-1 flex flex-col bg-white">
-        <a href="#" class="p-2">Nav Link 1</a>
-        <a href="#" class="p-2">Nav Link 2</a>
-        <a href="#" class="p-2">Nav Link 3</a>
+        <div class="h-32"></div>
+        <nav class="flex-1 flex flex-col">
+            <div class="flex flex-col">
+                <h2 class="text-center text-lg">
+                    Visualização da Página
+                </h2>
+                <div class="flex justify-evenly mt-5">
+                    <PlainButton v-on:click="() => notifyZoomSelected(FULL_HEIGHT_ZOOM)" :class="{ 'ring-4': fitHeightSelected, 'ring-gray-200': fitHeightSelected}">
+                        <h3 class="text-center">Tipo 1</h3>
+                        <FitHeightIcon class="h-28 w-28"/>
+                    </PlainButton>
+                    <PlainButton v-on:click="() => notifyZoomSelected(FULL_WIDTH_ZOOM)" :class="{ 'ring-4': fitWidthSelected, 'ring-gray-200': fitWidthSelected}">
+                        <h3 class="text-center">Tipo 2</h3>
+                        <FitWidthIcon class="h-28 w-28"/>
+                    </PlainButton>
+                </div>
+                
+            </div>
         </nav>
     </aside>
-    <section class="modal" :class="{hidden: isModalHidden}">
-        <div>
-            <p>
-              Comicz Viewer v1.0.0
-            </p>
-          </div>
-          <button class="btn back-to-site" v-on:click="backToSite">Voltar para o site</button>
-          <button class="btn share-page" v-on:click="sharePage">Compartilhar link da pagina</button>
-    </section>
     <!--<div class="overlay hidden"></div> -->
 </div>

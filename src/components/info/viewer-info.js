@@ -2,80 +2,27 @@
 require('./viewer-info.css');
 
 const fs = require('fs');
-const DOMUtils = require('../../util/dom-util');
-
-function ViewerInfo() {
-
-    const self = this;
-
-    const element = DOMUtils.parseTemplate(htmlTemplate);
-    const titleContent = DOMUtils.requireElement(element, '.title-content h2');
-    const optionsBtn = DOMUtils.requireElement(element, '.options-btn');
-    const modalEl = DOMUtils.requireElement(element, '.modal');
-    const backToSiteBtn = DOMUtils.requireElement(element, '.modal .back-to-site');
-    const sharePageBtn = DOMUtils.requireElement(element, '.modal .share-page');
-
-    let modalOpened = false;
-    let sharePageFn = null;
-    let backToSiteFn = null;
-
-    // Public Members
-    self.element = element;
-    self.setTitle = setTitle;
-    self.isModalOpened = isModalOpened;
-    self.closeModal = closeModal;
-    self.onBackToSiteClick = onBackToSiteClick;
-    self.onSharePageClick = onSharePageClick;
-
-    init();
-
-    function init() {
-        optionsBtn.addEventListener('click', function(e) {
-            modalEl.classList.toggle('hidden');
-            modalOpened = !modalEl.classList.contains('hidden');
-        });
-
-        sharePageBtn.addEventListener('click', function() {
-            if(sharePageFn) sharePageFn();
-        })
-
-        backToSiteBtn.addEventListener('click', function() {
-            if(backToSiteFn) backToSiteFn();
-        })
-
-    }
-
-    function isModalOpened() {
-        return modalOpened;
-    }
-
-    function closeModal(){
-        modalEl.classList.add('hidden');
-        modalOpened = false;
-    }
-
-    function setTitle(title) {
-        titleContent.innerHTML = title;
-    }
-
-    function onBackToSiteClick(callback) {
-        backToSiteFn = callback;
-    }
-
-    function onSharePageClick(callback) {
-        sharePageFn = callback;
-    }
-
-}
+const consts = require('../../constants');
+const userPrefs = require('../../user-pref');
 
 module.exports = {
     template: fs.readFileSync(`${__dirname}/viewer-info.html`, 'utf-8'),
-    style: fs.readFileSync(`${__dirname}/viewer-info.css`, 'utf-8'),
-    props: ['title', 'backToSiteFn', 'sharePageFn'],
+    props: ['title', 'backToSiteFn', 'sharePageFn', 'currentPage', 'pagesAmount'],
     data() {
         return {
-            isModalHidden: true,
-            isSideBarOpen: false
+            isOverlayOpen: false,
+            isSideBarOpen: false,
+            prefs: userPrefs.getPreferences(),
+            FULL_HEIGHT_ZOOM: consts.FULL_HEIGHT_ZOOM,
+            FULL_WIDTH_ZOOM: consts.FULL_WIDTH_ZOOM
+        }
+    },
+    computed: {
+        fitHeightSelected() {
+            return consts.FULL_HEIGHT_ZOOM == this.prefs.zoomType;
+        },
+        fitWidthSelected() {
+            return consts.FULL_WIDTH_ZOOM == this.prefs.zoomType;
         }
     },
     methods: {
@@ -86,6 +33,15 @@ module.exports = {
         sharePage(){
             if(this.sharePageFn)
                 this.sharePageFn()
+        },
+        notifyZoomSelected(zoomType){
+            this.prefs.zoomType = zoomType;
+            userPrefs.savePreferences(this.prefs);
+            this.$emit('zoom-type-selected', zoomType);
+
+        },
+        notifySliderChanged(newValue){
+            this.$emit('slider-changed', newValue)
         },
         openModal() {
             this.isSideBarOpen = !this.isSideBarOpen;

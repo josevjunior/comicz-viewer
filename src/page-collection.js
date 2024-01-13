@@ -20,6 +20,7 @@ function PageCollection(pages, loadSize) {
     self.goNext = goNext;
     self.goPrevious = goPrevious;
     self.getCurrent = getCurrent;
+    self.getCurrentIndex = getCurrentIndex;
 
     init();
     
@@ -62,7 +63,7 @@ function PageCollection(pages, loadSize) {
 
         let img = self.loadedPages[index];
         if(!img) {
-            img = new ImagePage(pages[i]);
+            img = new ImagePage(pages[index]);
         }
 
         return img;
@@ -70,6 +71,10 @@ function PageCollection(pages, loadSize) {
 
     function getCurrent() {
         return self.get(self.currentIndex);
+    }
+
+    function getCurrentIndex() {
+        return self.currentIndex;
     }
 
 }

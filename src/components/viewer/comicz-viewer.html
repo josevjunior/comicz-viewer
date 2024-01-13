@@ -1,10 +1,18 @@
 
-<div ref="imageViewerRef" class="min-h-full flex justify-center items-center">
-    <div ref="currentImageRef">
-        <img src="/img/Homunculus_008.png">
+<div ref="imageViewerRef" id="imageViewer" v-on:click="handleViewerClick" class="cz-image-viewer min-h-full flex justify-center items-center">
+    <div ref="currentImageRef" style="pointer-events: none;">
+        <img src="">
+        <Spinner v-if="loadingImage"/>
     </div>    
 </div>
-<div ref="viewerOverlayRef" v-on:click="handleViewerClick" class="z-10 flex text-white fixed top-0 left-0 min-w-full min-h-full">
-    <!-- <ViewerInfo v-if="optionsVisible" :title="title" /> -->
-    <ViewerInfo :title="title" />
+<div id="overlayContent" v-if="overlayVisible" v-on:click="handleViewerClick" class="z-options flex text-white fixed top-0 left-0 min-w-full min-h-full">
+    <div class="absolute z-overlay w-full h-full top-0 left-0" style="background-color: rgba(35, 35, 35, .7);">
+    </div>
+    <ViewerInfo
+        id="overlay" 
+        :title="title"
+        :current-page="pagesCol.getCurrentIndex()"
+        :pages-amount="pagesCol.size()"
+        @slider-changed="onSliderChanged"
+        @zoom-type-selected="onZoomTypeSelected"/>
 </div>

@@ -7,8 +7,10 @@ require('./comicz-viewer.css');
 
 const fs = require('fs');
 
-const UrlPageTracker = require('../../domain/url-page-tracker');
-const PageCollection = require('../../domain/page-collection');
+const UrlPageTracker = require('../../url-page-tracker');
+const PageCollection = require('../../page-collection');
+const consts = require('../../constants');
+const userPref = require('../../user-pref');
 
 module.exports = {
     template: fs.readFileSync(__dirname + '/comicz-viewer.html', 'utf-8'),
@@ -17,14 +19,17 @@ module.exports = {
         return {
             pagesCol: PageCollection.of(this.pages, 5),
             pageTracker: new UrlPageTracker(this.parentWin),
-            optionsVisible: false
+            overlayVisible: false,
+            loadingImage: false
         }
     },
     methods: {
-
+        
         updateImage(resizeImage = false) {
-            while (this.currentImageRef.firstChild) {
-                this.currentImageRef.removeChild(this.currentImageRef.firstChild);
+            for(const el of this.currentImageRef.children){
+                if(el.tagName == 'IMG'){
+                    this.currentImageRef.removeChild(el);
+                }
             }
     
             //applyImgStyle();
@@ -42,8 +47,16 @@ module.exports = {
                 console.debug('No pages/images');
                 return;
             }
+
+            const pref = userPref.getPreferences();
+            if(pref.zoomType == consts.FULL_HEIGHT_ZOOM) {
+                this.applyFullHeightZoom();
+            } else {
+                this.applyFullWidthZoom();
+            }
+            
     
-            if(window.innerHeight < window.innerWidth){ 
+            /*if(window.innerHeight < window.innerWidth){ 
     
                 const prefHeight = window.innerHeight * 0.95;
                 const current = this.pagesCol.getCurrent().img;
@@ -59,16 +72,37 @@ module.exports = {
                 current.style.width = `${prefWidth}px`;
                 current.style.height = "auto";
     
-            }
+            }*/
             
+        },
+
+        applyFullWidthZoom() {
+            const imgEl = this.pagesCol.getCurrent().img;
+            imgEl.style.height = 'auto';
+            imgEl.style.width = '100vw';
+
+            imgEl.style['max-width'] = '';
+            imgEl.style['max-height'] = '';
+        },
+
+        applyFullHeightZoom() {
+            const imgEl = this.pagesCol.getCurrent().img;
+            imgEl.style['max-height'] = '100vh';
+            imgEl.style.width = 'auto';
+
+            imgEl.style.height = '';
+            imgEl.style['max-width'] = '';
         },
 
         handleViewerClick(e) {
             const source = e.target || e.srcElement;
 
-            console.log('Source: ', source);
+            console.debug('Source: ', source);
 
-            if(source != this.viewerOverlayRef){
+            if("overlay" == source.id){
+                this.overlayVisible = false;
+                return;
+            } else if("imageViewer" != source.id){
                 return;
             }
 
@@ -81,26 +115,29 @@ module.exports = {
             } else if (pointX >= (currentWidth * 0.75)) {
                 if (this.pagesCol.hasNext()) this.nextImage();
             } else {
-    
-                /*if(viewerInfo.isModalOpened()) {
-                    viewerInfo.closeModal();
-                    return;
-                }*/
-    
-                this.viewerOverlayRef.classList.toggle('active');
-                this.optionsVisible = this.viewerOverlayRef.classList.contains('active');
+                this.overlayVisible = true;
             }
 
         },
 
         previousImage() {
-            this.pagesCol.goPrevious();
-            this.updateImage(true);
+            this.loadingImage = true;
+            this.pagesCol.goPrevious().ready().then(_ => {
+                this.loadingImage = false;
+                this.updateImage(true);
+                this.scrollToTop();
+            });
+            
         },
     
         nextImage() {
-            this.pagesCol.goNext();
-            this.updateImage(true);
+            this.loadingImage = true;
+            this.pagesCol.goNext().ready().then(_ => {
+                this.loadingImage = false;
+                this.updateImage(true);
+                this.scrollToTop();
+            });
+            
         },
 
         handleWindowResize(e) {
@@ -113,16 +150,36 @@ module.exports = {
             } else if (e.key === 'ArrowRight' && this.pagesCol.hasNext()) {
                 this.nextImage();
             }
+        },
+
+        onZoomTypeSelected(value){
+            if(consts.FULL_HEIGHT_ZOOM == value){
+                this.applyFullHeightZoom();
+            } else if (consts.FULL_WIDTH_ZOOM == value) {
+                this.applyFullWidthZoom();
+            }
+        },
+
+        onSliderChanged(value) {
+            this.pagesCol.getAndSelect(value-1);
+            this.updateImage(true);
+            this.scrollToTop();
+        },
+
+        scrollToTop(){
+            this.parentWin.scrollTo({
+                top: 0,
+                behaviour: 'smooth'
+            })
         }
     },
     setup() {
         return {
             imageViewerRef: Vue.ref(null),
-            viewerOverlayRef: Vue.ref(null),
             currentImageRef: Vue.ref(null)
         }
     },
-    mounted1() {
+    mounted() {
         console.debug('Syncing viewer with page url...');
         const {page: pageNumber} = this.pageTracker.getParams();
 
@@ -130,11 +187,11 @@ module.exports = {
 
         this.updateImage(true);
 
-        window.addEventListener('resize', this.handleWindowResize);
+        //window.addEventListener('resize', this.handleWindowResize);
         document.addEventListener('keydown', this.handleKeyDownEvents);
     },
     unmounted() {
-        window.removeEventListener('resize', this.handleWindowResize);
+        //window.removeEventListener('resize', this.handleWindowResize);
         document.removeEventListener('keydown', this.handleKeyDownEvents);
     }
 }
